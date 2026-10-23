@@ -10,7 +10,7 @@
 #
 # Uso (desde la raíz del repositorio):  Rscript scripts/clasificacion_variables.R
 
-clientes <- read.csv("data/clientes.csv", stringsAsFactors = FALSE)
+clientes <- read.csv("C:\\Users\\USUARIO\\Desktop\\Universidad-EPN\\4 TO SEMESTRE\\Estadistica I\\Labo2\\IDSD422-lab-muestreo-poblacion\\data\\clientes.csv", stringsAsFactors = FALSE)
 
 # ---------------------------------------------------------------------------
 # 1. Estructura del archivo
@@ -26,6 +26,8 @@ str(clientes)
 #         (character)? Anótalo para el informe. Ojo con satisfaccion: llega
 #         como número y es ordinal ("4 no es el doble de 2") — la justificación
 #         va en el informe.
+cat("\n--- TIPOS DE DATOS ---\n")
+str(clientes)
 
 # ---------------------------------------------------------------------------
 # 3. Valores únicos — ¿cuántas categorías hay y cuáles son?
@@ -36,7 +38,15 @@ str(clientes)
 # for (columna in names(clientes)) {
 #   ...
 # }
+cat("\n--- VALORES UNICOS POR COLUMNA ---\n")
 
+for (columna in names(clientes)) {
+  valores <- unique(clientes[[columna]])
+
+  cat("\nVariable:", columna, "\n")
+  cat("Cantidad de valores unicos:", length(valores), "\n")
+  print(valores)
+}
 # ---------------------------------------------------------------------------
 # 4. Declarar el orden de las variables ordinales
 # ---------------------------------------------------------------------------
@@ -46,27 +56,70 @@ str(clientes)
 #
 # TODO 3: convierte nivel_educacion con factor(..., levels = c(...), ordered = TRUE).
 #         Comprueba con min(): debe devolver "Primaria".
+orden_educacion <- c("Primaria", "Secundaria", "Universidad", "Posgrado")
+
+clientes$nivel_educacion <- factor(
+  clientes$nivel_educacion,
+  levels = orden_educacion,
+  ordered = TRUE
+)
+
+cat("\n--- NIVEL DE EDUCACION ORDENADO ---\n")
+print(clientes$nivel_educacion)
+
+cat("\nNivel minimo de educacion:\n")
+print(min(clientes$nivel_educacion))
 # TODO 4: haz lo mismo con satisfaccion (escala 1–5 como etiquetas ordenadas).
 #         Prueba extra: ¿qué pasa si en levels escribes "Postgrado" (con t) para
 #         nivel_educacion? Cuenta los faltantes con sum(is.na(...)) — la trampa
 #         del typo es silenciosa.
+clientes$satisfaccion <- factor(
+  clientes$satisfaccion,
+  levels = 1:5,
+  ordered = TRUE
+)
 
+cat("\n--- SATISFACCION ORDENADA ---\n")
+print(clientes$satisfaccion)
+
+cat("\nNivel minimo de satisfaccion:\n")
+print(min(clientes$satisfaccion))
+
+
+# Prueba con error de escritura: Postgrado
+educacion_original <- read.csv(
+  "C:\\Users\\USUARIO\\Desktop\\Universidad-EPN\\4 TO SEMESTRE\\Estadistica I\\Labo2\\IDSD422-lab-muestreo-poblacion\\data\\clientes.csv",
+  stringsAsFactors = FALSE
+)$nivel_educacion
+
+educacion_error <- factor(
+  educacion_original,
+  levels = c("Primaria", "Secundaria", "Universidad", "Postgrado"),
+  ordered = TRUE
+)
+
+cat("\n--- PRUEBA CON POSTGRADO MAL ESCRITO ---\n")
+cat("Cantidad de valores faltantes:",
+    sum(is.na(educacion_error)), "\n")
 # ---------------------------------------------------------------------------
 # 5. Resumen de la clasificación (para el informe)
 # ---------------------------------------------------------------------------
 # TODO 5: completa el resumen con el tipo de cada variable (el criterio que
 #         justifica cada clasificación va en el informe).
 clasificacion <- c(
-  cliente_id         = "…",
-  edad               = "…",
-  numero_hijos       = "…",
-  genero             = "…",
-  nivel_educacion    = "…",
-  ciudad             = "…",
-  ingresos_mensuales = "…",
-  satisfaccion       = "…"
+  cliente_id         = "Identificador nominal",
+  edad               = "Numerica discreta",
+  numero_hijos       = "Numerica discreta",
+  genero             = "Categorica nominal",
+  nivel_educacion    = "Categorica ordinal",
+  ciudad             = "Categorica nominal",
+  ingresos_mensuales = "Numerica continua",
+  satisfaccion       = "Categorica ordinal"
 )
-cat("\nResumen de la clasificación (para el informe):\n")
+
+cat("\n--- RESUMEN DE LA CLASIFICACION ---\n")
+
 for (variable in names(clasificacion)) {
-  cat(sprintf("  %-18s %s\n", variable, clasificacion[[variable]]))
+  cat(sprintf("  %-18s %s\n",
+              variable, clasificacion[[variable]]))
 }
