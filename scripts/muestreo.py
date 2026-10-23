@@ -34,7 +34,7 @@ def reporte(nombre, muestra, parametro):
 # La base de fidelización completa es la población: 400 clientes. El parámetro
 # es el ingreso mensual promedio real (solo calculable porque la población es
 # pequeña y accesible: sirve de espejo para juzgar las muestras).
-poblacion = pd.read_csv("data/clientes_400.csv")
+poblacion = pd.read_csv("C:\\Users\\USUARIO\\Desktop\\Universidad-EPN\\4 TO SEMESTRE\\Estadistica I\\Labo2\\IDSD422-lab-muestreo-poblacion\\data\\clientes_400.csv")
 parametro = poblacion["ingresos_mensuales"].mean()
 print(f"Población: {poblacion.shape[0]} clientes × {poblacion.shape[1]} columnas")
 print(f"Parámetro poblacional — ingreso medio: {parametro:.2f} USD")
@@ -48,7 +48,7 @@ print()
 #         Pista: .head(20) — igual que la demo de clase.
 #         Después de correrlo, mira la composición por ciudad que imprime el
 #         reporte: ¿es un corte al azar? ¿alguna ciudad falta por completo?
-muestra_conv = None
+muestra_conv = poblacion.head(20)
 
 # ---------------------------------------------------------------------------
 # 3. Muestra aleatoria simple: el sorteo de 20
@@ -56,9 +56,22 @@ muestra_conv = None
 # TODO 2: sortea 20 clientes con la misma probabilidad para todos (20/400 = 5 %).
 #         Pista: .sample(20, random_state=1). Con random_state el resultado es
 #         reproducible; sin él cambia en cada ejecución.
+muestra_aas = poblacion.sample(n=20, random_state=1)
 # TODO 3: repite el sorteo con las semillas 2 a 5 y anota las 5 medias en el
 #         informe: la variabilidad de la estimación es parte de la lección.
-muestra_aas = None
+print("\n--- MEDIAS CON DIFERENTES SEMILLAS ---")
+
+muestra1 = poblacion.sample(n=20, random_state=1)
+muestra2 = poblacion.sample(n=20, random_state=2)
+muestra3 = poblacion.sample(n=20, random_state=3)
+muestra4 = poblacion.sample(n=20, random_state=4)
+muestra5 = poblacion.sample(n=20, random_state=5)
+
+print("Semilla 1:", round(muestra1["ingresos_mensuales"].mean(), 2))
+print("Semilla 2:", round(muestra2["ingresos_mensuales"].mean(), 2))
+print("Semilla 3:", round(muestra3["ingresos_mensuales"].mean(), 2))
+print("Semilla 4:", round(muestra4["ingresos_mensuales"].mean(), 2))
+print("Semilla 5:", round(muestra5["ingresos_mensuales"].mean(), 2))
 
 # ---------------------------------------------------------------------------
 # 4. Muestra estratificada: 5 % dentro de cada ciudad
@@ -68,7 +81,7 @@ muestra_aas = None
 #         Cuenca (20 en total).
 #         Pista: .groupby("ciudad") y .sample(frac=0.05, random_state=1).
 #         ¿Qué garantiza este diseño que el sorteo simple no garantiza?
-muestra_est = None
+muestra_est = poblacion.groupby("ciudad").sample(frac=0.05, random_state=1)
 
 # ---------------------------------------------------------------------------
 # 5. Comparación final
