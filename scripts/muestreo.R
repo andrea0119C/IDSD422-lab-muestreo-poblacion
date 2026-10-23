@@ -7,7 +7,7 @@
 #
 # Uso (desde la raíz del repositorio):  Rscript scripts/muestreo.R
 
-poblacion <- read.csv("data/clientes_400.csv")
+poblacion <- read.csv("C:\\Users\\USUARIO\\Desktop\\Universidad-EPN\\4 TO SEMESTRE\\Estadistica I\\Labo2\\IDSD422-lab-muestreo-poblacion\\data\\clientes_400.csv")
 
 reporte <- function(nombre, muestra, parametro) {
   # Imprime n, media estimada y composición por ciudad de una muestra.
@@ -41,7 +41,7 @@ cat("Ciudades en la población: "); print(table(poblacion$ciudad))
 #         Pista: head(poblacion, 20) — igual que la demo de clase.
 #         Después de correrlo, mira la composición por ciudad que imprime el
 #         reporte: ¿es un corte al azar? ¿alguna ciudad falta por completo?
-muestra_conv <- NULL
+muestra_conv <- head(poblacion,20)
 
 # ---------------------------------------------------------------------------
 # 3. Muestra aleatoria simple: el sorteo de 20
@@ -49,10 +49,34 @@ muestra_conv <- NULL
 # TODO 2: sortea 20 clientes con la misma probabilidad para todos (20/400 = 5 %).
 #         Pista: poblacion[sample(nrow(poblacion), 20), ] con set.seed(1)
 #         delante para que sea reproducible (sin set.seed cambia cada vez).
+set.seed(1)
+muestra_aas <- poblacion[sample(nrow(poblacion), 20), ]
+
 # TODO 3: repite el sorteo con las semillas 2 a 5 y anota las 5 medias en el
 #         informe: la variabilidad de la estimación es parte de la lección.
 #         Pista: for (semilla in 1:5) { set.seed(semilla); ... }
-muestra_aas <- NULL
+cat("\n--- MEDIAS CON DIFERENTES SEMILLAS ---\n")
+
+set.seed(1)
+muestra1 <- poblacion[sample(nrow(poblacion), 20), ]
+
+set.seed(2)
+muestra2 <- poblacion[sample(nrow(poblacion), 20), ]
+
+set.seed(3)
+muestra3 <- poblacion[sample(nrow(poblacion), 20), ]
+
+set.seed(4)
+muestra4 <- poblacion[sample(nrow(poblacion), 20), ]
+
+set.seed(5)
+muestra5 <- poblacion[sample(nrow(poblacion), 20), ]
+
+cat("Semilla 1:", round(mean(muestra1$ingresos_mensuales), 2), "USD\n")
+cat("Semilla 2:", round(mean(muestra2$ingresos_mensuales), 2), "USD\n")
+cat("Semilla 3:", round(mean(muestra3$ingresos_mensuales), 2), "USD\n")
+cat("Semilla 4:", round(mean(muestra4$ingresos_mensuales), 2), "USD\n")
+cat("Semilla 5:", round(mean(muestra5$ingresos_mensuales), 2), "USD\n")
 
 # ---------------------------------------------------------------------------
 # 4. Muestra estratificada: 5 % dentro de cada ciudad
@@ -62,7 +86,9 @@ muestra_aas <- NULL
 #         Cuenca (20 en total).
 #         Pista: library(dplyr); poblacion |> group_by(ciudad) |> slice_sample(prop = 0.05)
 #         ¿Qué garantiza este diseño que el sorteo simple no garantiza?
-muestra_est <- NULL
+library(dplyr)
+set.seed(1)
+muestra_est <- poblacion |> group_by(ciudad) |> slice_sample(prop = 0.05)
 
 # ---------------------------------------------------------------------------
 # 5. Comparación final
